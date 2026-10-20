@@ -31,7 +31,7 @@ O endereço esperado é `https://roneyifg.github.io/dashifg/`. A publicação us
 
 ```sh
 npm run build -- --base /dashifg/
-npm run preview
+npm run preview -- --base /dashifg/
 ```
 
 O site publicado começa somente com dados fictícios. Nenhuma planilha real deve ser incluída no repositório ou nos artefatos do site. A importação continua sendo local ao navegador de cada pessoa.
