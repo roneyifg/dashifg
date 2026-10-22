@@ -1209,3 +1209,159 @@ tbody tr:hover {
     font-size: 9px;
   }
 }
+
+.matrix-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.chart-button {
+  height: 36px;
+  font-size: 11px;
+  padding: 9px 12px;
+}
+.ranking-dialog {
+  color: #253b35;
+  width: min(760px, calc(100% - 30px));
+  max-height: 90vh;
+  border: 1px solid #e2e9e2;
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 20px 100px #123b2333;
+  overflow: auto;
+}
+.ranking-dialog::backdrop {
+  background: #102d2266;
+  backdrop-filter: blur(4px);
+}
+.ranking-dialog h2 {
+  font-size: 23px;
+  line-height: 1.4;
+  margin: 12px 25px 10px 0;
+}
+.ranking-dialog > p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #728471;
+}
+.ranking-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+  border-top: 1px solid #e7ede5;
+  margin-top: 20px;
+  font-size: 11px;
+}
+.ranking-summary span {
+  color: #7a8979;
+}
+.ranking-scroll {
+  max-height: 47vh;
+  overflow: auto;
+  padding-right: 10px;
+}
+.ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ranking-list li {
+  padding: 12px 0;
+}
+.ranking-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+.ranking-position {
+  color: #92a08f;
+  font-size: 10px;
+  min-width: 18px;
+}
+.ranking-label strong {
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.ranking-value {
+  margin-left: auto;
+  white-space: nowrap;
+  color: #9c6b2e;
+  font-size: 11px;
+  font-weight: 600;
+}
+.ranking-track {
+  height: 22px;
+  background: #f5f2ec;
+  border-radius: 4px;
+  margin-left: 28px;
+  overflow: hidden;
+}
+.ranking-bar {
+  height: 100%;
+  background: #c89752;
+  border-radius: 4px;
+  min-width: 2px;
+}
+.ranking-axis {
+  margin: 12px 0 8px 28px;
+  display: flex;
+  justify-content: space-between;
+  color: #92a08f;
+  font-size: 10px;
+  border-top: 1px solid #e4e9e1;
+  padding-top: 8px;
+}
+.ranking-dialog .ranking-note {
+  font-size: 10px;
+  margin: 20px 0 0;
+  border-top: 1px solid #e7ede5;
+  padding-top: 15px;
+}
+.ranking-dialog .empty-state {
+  padding: 25px 15px;
+}
+.ranking-dialog .empty-state p {
+  line-height: 1.7;
+}
+@media (max-width: 1100px) {
+  .matrix-options {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .matrix-actions {
+    justify-content: space-between;
+  }
+}
+@media (max-width: 520px) {
+  .matrix-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .chart-button {
+    width: 100%;
+  }
+  .ranking-dialog {
+    padding: 25px 18px;
+  }
+  .ranking-dialog h2 {
+    font-size: 19px;
+  }
+  .ranking-label {
+    gap: 6px;
+    font-size: 11px;
+  }
+  .ranking-value {
+    font-size: 10px;
+  }
+  .ranking-track {
+    height: 19px;
+  }
+  .ranking-summary {
+    font-size: 10px;
+  }
+}

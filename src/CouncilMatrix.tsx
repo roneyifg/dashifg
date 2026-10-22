@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChartNoAxesCombined } from "lucide-react";
 import { absenceFor, gradeFor, periods, type Result } from "./data";
 import { councilRows } from "./council";
+import { CouncilChart } from "./CouncilChart";
 export function CouncilMatrix({
   data,
   subjects,
@@ -18,6 +19,7 @@ export function CouncilMatrix({
   onReset: () => void;
 }) {
   const [order, setOrder] = useState<"attention" | "name">("attention");
+  const [chartOpen, setChartOpen] = useState(false);
   const rows = councilRows(data, period, attention, order);
   const fmt = (n: number | null) =>
     n == null ? "—" : n.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
@@ -28,17 +30,34 @@ export function CouncilMatrix({
           Cada linha é um aluno. Clique no nome para consultar o histórico.
           Deslize para ver todas as disciplinas.
         </p>
-        <label>
-          Ordenar por
-          <select
-            value={order}
-            onChange={(e) => setOrder(e.target.value as typeof order)}
+        <div className="matrix-actions">
+          <button
+            className="primary chart-button"
+            onClick={() => setChartOpen(true)}
           >
-            <option value="attention">Mais disciplinas abaixo de 6,0</option>
-            <option value="name">Nome do aluno (A–Z)</option>
-          </select>
-        </label>
+            <ChartNoAxesCombined size={17} />
+            Ver gráfico
+          </button>
+          <label>
+            Ordenar por
+            <select
+              value={order}
+              onChange={(e) => setOrder(e.target.value as typeof order)}
+            >
+              <option value="attention">Mais disciplinas abaixo de 6,0</option>
+              <option value="name">Nome do aluno (A–Z)</option>
+            </select>
+          </label>
+        </div>
       </div>
+      {chartOpen && (
+        <CouncilChart
+          data={data}
+          period={period}
+          subjects={subjects}
+          onClose={() => setChartOpen(false)}
+        />
+      )}
       <div
         className="table-scroll matrix-scroll"
         role="region"
