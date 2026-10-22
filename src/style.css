@@ -1053,3 +1053,159 @@ tbody tr:hover {
     font-size: 8px;
   }
 }
+
+/* Council matrix: sticky names keep context while scrolling across subjects. */
+.matrix-options {
+  padding: 16px 23px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #edf1ec;
+}
+.matrix-options p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #6b7d6f;
+  max-width: 480px;
+  margin: 0;
+}
+.matrix-options label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 230px;
+}
+.matrix-options select {
+  padding: 9px;
+  border: 1px solid #dce6dc;
+  border-radius: 6px;
+  background: #fff;
+  color: #506054;
+  font-size: 11px;
+}
+.council-matrix {
+  width: max-content;
+  min-width: 100%;
+  table-layout: fixed;
+}
+.council-matrix thead th {
+  width: 155px;
+  max-width: 155px;
+  min-width: 155px;
+  white-space: normal;
+  line-height: 1.6;
+  text-transform: none;
+  font-size: 10px;
+  letter-spacing: 0;
+  text-align: center;
+  height: 80px;
+}
+.council-matrix .matrix-student {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 210px;
+  width: 210px;
+  max-width: 210px;
+  background: #fff;
+  text-align: left;
+  box-shadow: 2px 0 3px #234d2910;
+}
+.council-matrix thead .matrix-student {
+  z-index: 3;
+  background: #fafcf9;
+}
+.council-matrix tbody th {
+  top: auto;
+  font-weight: 500;
+  letter-spacing: 0;
+  border-bottom: 1px solid #eff2ed;
+}
+.council-matrix .student-name {
+  white-space: normal;
+  line-height: 1.6;
+  width: 100%;
+  justify-content: space-between;
+}
+.council-matrix .student-name svg {
+  flex-shrink: 0;
+}
+.council-matrix td {
+  text-align: center;
+  height: 76px;
+}
+.council-matrix .matrix-count {
+  min-width: 120px;
+  width: 120px;
+  max-width: 120px;
+}
+.matrix-count small {
+  display: block;
+  font-size: 9px;
+  color: #84917f;
+  margin-top: 5px;
+}
+.matrix-risk {
+  font-size: 16px;
+  color: #a57332;
+  font-weight: 650;
+}
+.matrix-zero {
+  font-size: 16px;
+  color: #568569;
+  font-weight: 650;
+}
+.matrix-faltas {
+  display: block;
+  font-size: 9px;
+  color: #7d8b7b;
+  margin-top: 7px;
+}
+.matrix-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 16px 23px;
+  border-top: 1px solid #edf1e9;
+  font-size: 10px;
+  color: #758570;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 600px) {
+  .matrix-options {
+    padding: 15px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .matrix-options label {
+    min-width: 0;
+  }
+  .council-matrix .matrix-student {
+    min-width: 145px;
+    max-width: 145px;
+    width: 145px;
+    padding: 12px;
+  }
+  .council-matrix .matrix-count {
+    min-width: 105px;
+    width: 105px;
+    max-width: 105px;
+  }
+  .matrix-summary {
+    padding: 15px;
+    font-size: 9px;
+  }
+}

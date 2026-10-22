@@ -27,6 +27,7 @@ import {
   type Result,
 } from "./data";
 import "./style.css";
+import { CouncilMatrix } from "./CouncilMatrix";
 const fmt = (v: number | null) =>
   v == null
     ? "—"
@@ -52,7 +53,7 @@ function App() {
   const [selected, setSelected] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState("council");
   const [mobile, setMobile] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLElement>(null);
@@ -170,6 +171,16 @@ function App() {
         <div className="nav-label">ESPAÇO ACADÊMICO</div>
         <nav>
           <button
+            className={tab === "council" ? "active" : ""}
+            onClick={() => {
+              setTab("council");
+              setMobile(false);
+            }}
+          >
+            <GraduationCap size={18} />
+            Visão do conselho
+          </button>
+          <button
             className={tab === "overview" ? "active" : ""}
             onClick={() => {
               setTab("overview");
@@ -220,7 +231,13 @@ function App() {
             </button>
             <span>Espaço acadêmico</span>
             <span className="slash">/</span>
-            <strong>{tab === "overview" ? "Visão geral" : "Alunos"}</strong>
+            <strong>
+              {tab === "council"
+                ? "Visão do conselho"
+                : tab === "overview"
+                  ? "Visão geral"
+                  : "Alunos"}
+            </strong>
           </div>
           <span className="top-badge">
             <span />
@@ -232,9 +249,11 @@ function App() {
             <div>
               <div className="eyebrow">ACOMPANHAMENTO PEDAGÓGICO</div>
               <h1>
-                {tab === "overview"
-                  ? "Cada aluno, uma trajetória."
-                  : "Um olhar para cada aluno."}
+                {tab === "council"
+                  ? "A turma inteira, em um olhar."
+                  : tab === "overview"
+                    ? "Cada aluno, uma trajetória."
+                    : "Um olhar para cada aluno."}
               </h1>
               <p>
                 Notas e frequência reunidas para um conselho mais informado.
@@ -378,10 +397,14 @@ function App() {
             <div className="results-heading">
               <div>
                 <h2>
-                  {tab === "overview"
-                    ? "Desempenho da turma"
-                    : "Alunos e disciplinas"}
-                  <span className="count">{shown.length}</span>
+                  {tab === "council"
+                    ? "Matriz do conselho"
+                    : tab === "overview"
+                      ? "Desempenho da turma"
+                      : "Alunos e disciplinas"}
+                  {tab !== "council" && (
+                    <span className="count">{shown.length}</span>
+                  )}
                 </h2>
                 <p>Um olhar sobre as notas e faltas de cada aluno.</p>
               </div>
@@ -416,164 +439,177 @@ function App() {
               </button>
               <span className="period-label">{periods[period]}</span>
             </div>
-            <div className="table-scroll">
-              {tab === "students" ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ALUNO</th>
-                      <th>DISCIPLINAS NO RECORTE</th>
-                      <th>MÉDIA DAS NOTAS</th>
-                      <th>FALTAS</th>
-                      <th>NOTAS ABAIXO DE 6,0</th>
-                      <th aria-label="Histórico" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...new Set(shown.map((r) => r.student))].map((name) => {
-                      const records = shown.filter((r) => r.student === name);
-                      const notes = records
-                        .map((r) => gradeFor(r, period))
-                        .filter((g): g is number => g != null);
-                      const absences = records
-                        .map((r) => absenceFor(r, period))
-                        .filter((f): f is number => f != null);
-                      return (
-                        <tr key={name}>
-                          <td>
-                            <button
-                              className="student-name"
-                              onClick={() => setSelected(name)}
-                            >
-                              <span
-                                className={`avatar avatar-${students.indexOf(name) % 4}`}
+            {tab === "council" ? (
+              <CouncilMatrix
+                data={filtered}
+                subjects={subject ? [subject] : subjects}
+                period={period}
+                attention={attention}
+                onSelect={setSelected}
+                onReset={reset}
+              />
+            ) : (
+              <div className="table-scroll">
+                {tab === "students" ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ALUNO</th>
+                        <th>DISCIPLINAS NO RECORTE</th>
+                        <th>MÉDIA DAS NOTAS</th>
+                        <th>FALTAS</th>
+                        <th>NOTAS ABAIXO DE 6,0</th>
+                        <th aria-label="Histórico" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...new Set(shown.map((r) => r.student))].map((name) => {
+                        const records = shown.filter((r) => r.student === name);
+                        const notes = records
+                          .map((r) => gradeFor(r, period))
+                          .filter((g): g is number => g != null);
+                        const absences = records
+                          .map((r) => absenceFor(r, period))
+                          .filter((f): f is number => f != null);
+                        return (
+                          <tr key={name}>
+                            <td>
+                              <button
+                                className="student-name"
+                                onClick={() => setSelected(name)}
                               >
-                                {name
-                                  .split(" ")
-                                  .slice(0, 2)
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </span>
-                              <strong>{name}</strong>
-                            </button>
-                          </td>
-                          <td>{records.length}</td>
-                          <td>
-                            <Grade
-                              value={
-                                notes.length
-                                  ? notes.reduce((a, b) => a + b, 0) /
-                                    notes.length
-                                  : null
-                              }
-                            />
-                          </td>
-                          <td>
-                            {absences.length
-                              ? fmt(absences.reduce((a, b) => a + b, 0))
-                              : "—"}
-                          </td>
-                          <td>{notes.filter((n) => n < 6).length}</td>
-                          <td>
-                            <button
-                              className="icon-button"
-                              aria-label={`Ver histórico de ${name}`}
-                              onClick={() => setSelected(name)}
-                            >
-                              <ArrowUpRight size={17} />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              ) : (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>ALUNO</th>
-                      <th>DISCIPLINA</th>
-                      <th>{period === 4 ? "MÉDIA FINAL" : "NOTA"}</th>
-                      <th>FALTAS</th>
-                      <th>INDICADOR DA NOTA</th>
-                      <th aria-label="Detalhes" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {shown.map((r, i) => {
-                      const grade = gradeFor(r, period);
-                      return (
-                        <tr key={`${r.student}-${r.subject}-${i}`}>
-                          <td>
-                            <button
-                              className="student-name"
-                              onClick={() => setSelected(r.student)}
-                            >
-                              <span
-                                className={`avatar avatar-${students.indexOf(r.student) % 4}`}
+                                <span
+                                  className={`avatar avatar-${students.indexOf(name) % 4}`}
+                                >
+                                  {name
+                                    .split(" ")
+                                    .slice(0, 2)
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </span>
+                                <strong>{name}</strong>
+                              </button>
+                            </td>
+                            <td>{records.length}</td>
+                            <td>
+                              <Grade
+                                value={
+                                  notes.length
+                                    ? notes.reduce((a, b) => a + b, 0) /
+                                      notes.length
+                                    : null
+                                }
+                              />
+                            </td>
+                            <td>
+                              {absences.length
+                                ? fmt(absences.reduce((a, b) => a + b, 0))
+                                : "—"}
+                            </td>
+                            <td>{notes.filter((n) => n < 6).length}</td>
+                            <td>
+                              <button
+                                className="icon-button"
+                                aria-label={`Ver histórico de ${name}`}
+                                onClick={() => setSelected(name)}
                               >
-                                {r.student
-                                  .split(" ")
-                                  .slice(0, 2)
-                                  .map((n) => n[0])
-                                  .join("")}
+                                <ArrowUpRight size={17} />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ALUNO</th>
+                        <th>DISCIPLINA</th>
+                        <th>{period === 4 ? "MÉDIA FINAL" : "NOTA"}</th>
+                        <th>FALTAS</th>
+                        <th>INDICADOR DA NOTA</th>
+                        <th aria-label="Detalhes" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {shown.map((r, i) => {
+                        const grade = gradeFor(r, period);
+                        return (
+                          <tr key={`${r.student}-${r.subject}-${i}`}>
+                            <td>
+                              <button
+                                className="student-name"
+                                onClick={() => setSelected(r.student)}
+                              >
+                                <span
+                                  className={`avatar avatar-${students.indexOf(r.student) % 4}`}
+                                >
+                                  {r.student
+                                    .split(" ")
+                                    .slice(0, 2)
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </span>
+                                <strong>{r.student}</strong>
+                              </button>
+                            </td>
+                            <td className="subject-cell">{r.subject}</td>
+                            <td>
+                              <Grade value={grade} />
+                            </td>
+                            <td className="absence-cell">
+                              {fmt(absenceFor(r, period))}
+                            </td>
+                            <td>
+                              <span
+                                className={`status ${grade == null ? "neutral" : grade < 6 ? "warning" : "success"}`}
+                              >
+                                <i />
+                                {grade == null
+                                  ? "Sem registro"
+                                  : grade < 6
+                                    ? "Precisa de atenção"
+                                    : "Média atingida"}
                               </span>
-                              <strong>{r.student}</strong>
-                            </button>
-                          </td>
-                          <td className="subject-cell">{r.subject}</td>
-                          <td>
-                            <Grade value={grade} />
-                          </td>
-                          <td className="absence-cell">
-                            {fmt(absenceFor(r, period))}
-                          </td>
-                          <td>
-                            <span
-                              className={`status ${grade == null ? "neutral" : grade < 6 ? "warning" : "success"}`}
-                            >
-                              <i />
-                              {grade == null
-                                ? "Sem registro"
-                                : grade < 6
-                                  ? "Precisa de atenção"
-                                  : "Média atingida"}
-                            </span>
-                          </td>
-                          <td>
-                            <button
-                              className="icon-button"
-                              aria-label={`Ver histórico de ${r.student}`}
-                              onClick={() => setSelected(r.student)}
-                            >
-                              <ArrowUpRight size={17} />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )}
-              {!shown.length && (
-                <div className="empty-state">
-                  <Search size={28} />
-                  <h3>Nenhum resultado encontrado</h3>
-                  <p>Tente outro aluno ou disciplina, ou limpe os filtros.</p>
-                  <button className="text-button" onClick={reset}>
-                    Limpar filtros
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="table-footer">
-              <span>
-                {shown.length} registros ·{" "}
-                {new Set(shown.map((r) => r.student)).size} alunos
-              </span>
-              <span>“—” indica informação sem registro</span>
-            </div>
+                            </td>
+                            <td>
+                              <button
+                                className="icon-button"
+                                aria-label={`Ver histórico de ${r.student}`}
+                                onClick={() => setSelected(r.student)}
+                              >
+                                <ArrowUpRight size={17} />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+                {!shown.length && (
+                  <div className="empty-state">
+                    <Search size={28} />
+                    <h3>Nenhum resultado encontrado</h3>
+                    <p>Tente outro aluno ou disciplina, ou limpe os filtros.</p>
+                    <button className="text-button" onClick={reset}>
+                      Limpar filtros
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {tab !== "council" && (
+              <div className="table-footer">
+                <span>
+                  {shown.length} registros ·{" "}
+                  {new Set(shown.map((r) => r.student)).size} alunos
+                </span>
+                <span>“—” indica informação sem registro</span>
+              </div>
+            )}
           </section>
           <footer className="page-footer">
             <span>

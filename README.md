@@ -35,3 +35,9 @@ npm run preview -- --base /dashifg/
 ```
 
 O site publicado começa somente com dados fictícios. Nenhuma planilha real deve ser incluída no repositório ou nos artefatos do site. A importação continua sendo local ao navegador de cada pessoa.
+
+## Visão do conselho
+
+A tela inicial apresenta uma matriz de alunos × disciplinas, com nota e faltas do bimestre selecionado (ou resultado final). As notas abaixo de 6,0 recebem destaque e cada aluno tem um contador de disciplinas abaixo da média. A ordenação inicial prioriza esse contador; também é possível ordenar por nome. Empates são resolvidos por ordem alfabética.
+
+Os filtros de aluno, disciplina, período e busca também se aplicam à matriz. O contador considera apenas as disciplinas no recorte. “Somente atenção” seleciona alunos com alguma nota abaixo de 6,0 e preserva suas demais células para comparação. “—” é uma nota sem registro; zero continua sendo zero. “Sem vínculo” identifica a ausência de registro aluno/disciplina na importação e não afirma que o aluno não está matriculado. Clique no nome para abrir o histórico completo. Nomes e cabeçalhos ficam fixos durante a rolagem da matriz.
